@@ -1,0 +1,8 @@
+from django.apps import AppConfig
+class AuthapiConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'authapi'
+
+    def ready(self):
+        import authapi.signals  # Import signals when the app is ready
+

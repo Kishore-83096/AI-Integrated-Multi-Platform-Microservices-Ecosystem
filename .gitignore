@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+ENV/
+*.env
+.env.*
+
+# Node / React / Vite
+node_modules/
+build/
+dist/
+
+# Java / Spring Boot (if any service uses it)
+target/
+*.jar
+*.war
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Docker, cache
+*.pid
+.cache/
+
+# LLM / AI model files
+*.Q4_K_M
+*.Q6_K
+*.gguf
