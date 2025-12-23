@@ -1,5 +1,5 @@
 """
-Django settings for Auth Microservice
+Django settings for ai_backend project.
 """
 
 from pathlib import Path
@@ -8,12 +8,45 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ========= SECURITY ==========
+# ========== SECURITY ==========
+# MUST be same as Auth Microservice for token sharing
 SECRET_KEY = 'django-insecure-vwktjf#7ec0k06*pw58y$m%jp&gw#eyop0zw3=saly38=f+lu*'
+
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
-# ========= JWT SHARED CONFIG (SAME AS AI CHAT SERVICE) ==========
+# ========== INSTALLED APPS ==========
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'rest_framework',
+    'corsheaders',
+
+    'aibot',      # your AI chat app
+]
+
+# ========== MIDDLEWARE ==========
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# ========== CORS ==========
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+# ========== SIMPLE JWT (MUST MATCH AUTH MICROSERVICE) ==========
 SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
@@ -27,55 +60,19 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-# ========= INSTALLED APPS ==========
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    'rest_framework',
-    'corsheaders',
-
-    'users',
-    'subscriptions',
-    'authapi',   # login / signup / token generator API
-]
-
-# ========= MIDDLEWARE ==========
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-# ========= CORS ==========
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # react frontend microservice aichat
-    "http://localhost:3000",  # react frontend microservice auth
-]
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
-
-# ========= REST FRAMEWORK ==========
+# ========== REST FRAMEWORK ==========
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'aibot.authentication.StatelessJWTAuthentication',
     )
 }
 
-# ========= URL / WSGI ==========
-ROOT_URLCONF = 'core.urls'
-WSGI_APPLICATION = 'core.wsgi.application'
+# ========== URL + WSGI ==========
+ROOT_URLCONF = 'ai_backend.urls'
+WSGI_APPLICATION = 'ai_backend.wsgi.application'
 
-# ========= TEMPLATES ==========
+# ========== TEMPLATES ==========
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -91,27 +88,35 @@ TEMPLATES = [
     },
 ]
 
-# ========= STATIC ==========
-STATIC_URL = 'static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# ========= DATABASE (MySQL for Auth) ==========
+# ========== DATABASE ==========
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'auth_db',
-        'USER': 'auth_user',
+        'NAME': 'aibot_db',
+        'USER': 'root',
         'PASSWORD': 'Kishore@2000',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
 
-# ========= INTERNATIONALIZATION ==========
+# SQLite is fine for AI microservice
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+'''
+
+# ========== INTERNATIONALIZATION ==========
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
+
+# ========== STATIC ==========
+STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
