@@ -95,13 +95,7 @@ def format_duration(total_milliseconds):
 # CHAT INTERACTION VIEW (INTERACTION-BASED STORAGE)
 # ======================================================
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from datetime import datetime
-import time
-import logging
 
-logger = logging.getLogger(__name__)
 
 
 class AIBotChatView(APIView):
